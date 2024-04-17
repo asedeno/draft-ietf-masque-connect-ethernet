@@ -4,8 +4,8 @@
 
 Multiplexed Application Substrate over QUIC Encryption      A. R. Sedeño
 Internet-Draft                                                Google LLC
-Intended status: Standards Track                         19 October 2023
-Expires: 21 April 2024
+Intended status: Standards Track                           17 April 2024
+Expires: 19 October 2024
 
 
                        Proxying Ethernet in HTTP
@@ -52,11 +52,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 April 2024.
+   This Internet-Draft will expire on 19 October 2024.
 
 Copyright Notice
 
-   Copyright (c) 2023 IETF Trust and the persons identified as the
+   Copyright (c) 2024 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -85,13 +85,15 @@ Table of Contents
    8.  Examples
      8.1.  Remote Access L2VPN
      8.2.  Site-to-Site L2VPN
-   9.  Security Considerations
-   10. IANA Considerations
-     10.1.  HTTP Upgrade Token
-     10.2.  Updates to the MASQUE URI Suffixes Registry
-   11. References
-     11.1.  Normative References
-     11.2.  Informative References
+   9.  Performance Considerations
+     9.1.  802.1Q VLAN tagging
+   10. Security Considerations
+   11. IANA Considerations
+     11.1.  HTTP Upgrade Token
+     11.2.  Updates to the MASQUE URI Suffixes Registry
+   12. References
+     12.1.  Normative References
+     12.2.  Informative References
    Acknowledgments
    Author's Address
 
@@ -490,7 +492,16 @@ Table of Contents
    tunnel; the exchange between the Client and the Proxy is the same as
    in Figure 7 above.
 
-9.  Security Considerations
+9.  Performance Considerations
+
+9.1.  802.1Q VLAN tagging
+
+   While the protocol as described can proxy Ethernet frames with 802.1Q
+   VLAN tags, it is RECOMMENDED that individual VLANs be proxied in
+   separate connections, and VLAN tags be stripped and applied by the
+   Ethernet proxying endpoints as needed.
+
+10.  Security Considerations
 
    There are risks in allowing arbitrary clients to establish a tunnel
    to a Layer 2 network.  Bad actors could abuse this capability to
@@ -512,9 +523,9 @@ Table of Contents
    These are the same attacks available to an arbitrary client with
    physical access to the network.
 
-10.  IANA Considerations
+11.  IANA Considerations
 
-10.1.  HTTP Upgrade Token
+11.1.  HTTP Upgrade Token
 
    This document will request IANA to register "connect-ethernet" in the
    HTTP Upgrade Token Registry maintained at
@@ -525,11 +536,11 @@ Table of Contents
    Expected Version Tokens:  None
    References:  This document
 
-10.2.  Updates to the MASQUE URI Suffixes Registry
+11.2.  Updates to the MASQUE URI Suffixes Registry
 
    This document will request IANA to register "ethernet" in the MASQUE
-   URI Suffixes Registry maintained at $IANA_URL_TBD, created by
-   CONNECT-IP [CONNECT-IP].
+   URI Suffixes Registry maintained at
+   <https://www.iana.org/assignments/masque>, created by [CONNECT-IP].
 
            +==============+===================+===============+
            | Path Segment | Description       | Reference     |
@@ -539,9 +550,9 @@ Table of Contents
 
                      Table 1: New MASQUE URI Suffixes
 
-11.  References
+12.  References
 
-11.1.  Normative References
+12.1.  Normative References
 
    [CONNECT-IP]
               Pauly, T., Ed., Schinazi, D., Chernyakhovsky, A.,
@@ -613,7 +624,7 @@ Table of Contents
               STD 7, RFC 9293, DOI 10.17487/RFC9293, August 2022,
               <https://www.rfc-editor.org/rfc/rfc9293>.
 
-11.2.  Informative References
+12.2.  Informative References
 
    [ETHERIP]  Housley, R. and S. Hollenbeck, "EtherIP: Tunneling
               Ethernet Frames in IP Datagrams", RFC 3378,
