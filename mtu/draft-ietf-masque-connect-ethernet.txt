@@ -4,8 +4,8 @@
 
 Multiplexed Application Substrate over QUIC Encryption      A. R. Sedeño
 Internet-Draft                                                Google LLC
-Intended status: Standards Track                             10 May 2024
-Expires: 11 November 2024
+Intended status: Standards Track                             14 May 2024
+Expires: 15 November 2024
 
 
                        Proxying Ethernet in HTTP
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 November 2024.
+   This Internet-Draft will expire on 15 November 2024.
 
 Copyright Notice
 
@@ -513,7 +513,7 @@ Table of Contents
 9.1.  MTU Considerations
 
    When using HTTP/3 with the QUIC Datagram extension [QUIC-DGRAM],
-   Ethernet frames may be transmitted in QUIC DATAGRAM frames.  Since
+   Ethernet frames can be transmitted in QUIC DATAGRAM frames.  Since
    these frames cannot be fragmented, they can only carry Ethernet
    frames up to a given length determined by the QUIC connection
    configuration and the Path MTU (PMTU).
