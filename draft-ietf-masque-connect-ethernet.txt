@@ -4,8 +4,8 @@
 
 Multiplexed Application Substrate over QUIC Encryption      A. R. Sedeño
 Internet-Draft                                                Google LLC
-Intended status: Standards Track                         19 October 2023
-Expires: 21 April 2024
+Intended status: Standards Track                            29 June 2024
+Expires: 31 December 2024
 
 
                        Proxying Ethernet in HTTP
@@ -52,11 +52,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 April 2024.
+   This Internet-Draft will expire on 31 December 2024.
 
 Copyright Notice
 
-   Copyright (c) 2023 IETF Trust and the persons identified as the
+   Copyright (c) 2024 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -85,13 +85,16 @@ Table of Contents
    8.  Examples
      8.1.  Remote Access L2VPN
      8.2.  Site-to-Site L2VPN
-   9.  Security Considerations
-   10. IANA Considerations
-     10.1.  HTTP Upgrade Token
-     10.2.  Updates to the MASQUE URI Suffixes Registry
-   11. References
-     11.1.  Normative References
-     11.2.  Informative References
+   9.  Performance Considerations
+     9.1.  MTU Considerations
+     9.2.  802.1Q VLAN tagging
+   10. Security Considerations
+   11. IANA Considerations
+     11.1.  HTTP Upgrade Token
+     11.2.  Updates to the MASQUE URI Suffixes Registry
+   12. References
+     12.1.  Normative References
+     12.2.  Informative References
    Acknowledgments
    Author's Address
 
@@ -490,7 +493,50 @@ Table of Contents
    tunnel; the exchange between the Client and the Proxy is the same as
    in Figure 7 above.
 
-9.  Security Considerations
+9.  Performance Considerations
+
+   When the protocol running inside the tunnel uses congestion control
+   (e.g., [TCP] or [QUIC]), the proxied traffic will incur at least two
+   nested congestion controllers.  When tunneled packets are sent using
+   QUIC DATAGRAM frames, the outer HTTP connection MAY disable
+   congestion control for those packets that contain only QUIC DATAGRAM
+   frames encapsulating Ethernet frames.  Implementers will benefit from
+   reading the guidance in Section 3.1.11 of [UDP-USAGE].
+
+   When the protocol running inside the tunnel uses loss recovery (e.g.,
+   [TCP] or [QUIC]) and the outer HTTP connection runs over TCP, the
+   proxied traffic will incur at least two nested loss recovery
+   mechanisms.  This can reduce performance, as both can sometimes
+   independently retransmit the same data.  To avoid this, Ethernet
+   proxying SHOULD be performed over HTTP/3 to allow leveraging the QUIC
+   DATAGRAM frame.
+
+9.1.  MTU Considerations
+
+   When using HTTP/3 with the QUIC Datagram extension [QUIC-DGRAM],
+   Ethernet frames can be transmitted in QUIC DATAGRAM frames.  Since
+   these frames cannot be fragmented, they can only carry Ethernet
+   frames up to a given length determined by the QUIC connection
+   configuration and the Path MTU (PMTU).
+
+   When using HTTP/1.1 or HTTP/2, and when using HTTP/3 without the QUIC
+   Datagram extension [QUIC-DGRAM], Ethernet frames are transmitted in
+   DATAGRAM capsules as defined in [HTTP-DGRAM].  DATAGRAM capsules are
+   transmitted reliably over an underlying stream, and they may be split
+   across multiple QUIC or TCP packets.
+
+   The trade-off between supporting a larger MTU and avoiding
+   fragmentation should be considered when deciding what mode(s) to
+   operate in.
+
+9.2.  802.1Q VLAN tagging
+
+   While the protocol as described can proxy Ethernet frames with 802.1Q
+   VLAN tags, it is RECOMMENDED that individual VLANs be proxied in
+   separate connections, and VLAN tags be stripped and applied by the
+   Ethernet proxying endpoints as needed.
+
+10.  Security Considerations
 
    There are risks in allowing arbitrary clients to establish a tunnel
    to a Layer 2 network.  Bad actors could abuse this capability to
@@ -512,9 +558,9 @@ Table of Contents
    These are the same attacks available to an arbitrary client with
    physical access to the network.
 
-10.  IANA Considerations
+11.  IANA Considerations
 
-10.1.  HTTP Upgrade Token
+11.1.  HTTP Upgrade Token
 
    This document will request IANA to register "connect-ethernet" in the
    HTTP Upgrade Token Registry maintained at
@@ -525,11 +571,11 @@ Table of Contents
    Expected Version Tokens:  None
    References:  This document
 
-10.2.  Updates to the MASQUE URI Suffixes Registry
+11.2.  Updates to the MASQUE URI Suffixes Registry
 
    This document will request IANA to register "ethernet" in the MASQUE
-   URI Suffixes Registry maintained at $IANA_URL_TBD, created by
-   CONNECT-IP [CONNECT-IP].
+   URI Suffixes Registry maintained at
+   <https://www.iana.org/assignments/masque>, created by [CONNECT-IP].
 
            +==============+===================+===============+
            | Path Segment | Description       | Reference     |
@@ -539,9 +585,9 @@ Table of Contents
 
                      Table 1: New MASQUE URI Suffixes
 
-11.  References
+12.  References
 
-11.1.  Normative References
+12.1.  Normative References
 
    [CONNECT-IP]
               Pauly, T., Ed., Schinazi, D., Chernyakhovsky, A.,
@@ -600,6 +646,12 @@ Table of Contents
               DOI 10.17487/RFC9000, May 2021,
               <https://www.rfc-editor.org/rfc/rfc9000>.
 
+   [QUIC-DGRAM]
+              Pauly, T., Kinnear, E., and D. Schinazi, "An Unreliable
+              Datagram Extension to QUIC", RFC 9221,
+              DOI 10.17487/RFC9221, March 2022,
+              <https://www.rfc-editor.org/rfc/rfc9221>.
+
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
@@ -613,7 +665,7 @@ Table of Contents
               STD 7, RFC 9293, DOI 10.17487/RFC9293, August 2022,
               <https://www.rfc-editor.org/rfc/rfc9293>.
 
-11.2.  Informative References
+12.2.  Informative References
 
    [ETHERIP]  Housley, R. and S. Hollenbeck, "EtherIP: Tunneling
               Ethernet Frames in IP Datagrams", RFC 3378,
@@ -625,6 +677,11 @@ Table of Contents
               ietf-intarea-gue-09, 26 October 2019,
               <https://datatracker.ietf.org/doc/html/draft-ietf-intarea-
               gue-09>.
+
+   [UDP-USAGE]
+              Eggert, L., Fairhurst, G., and G. Shepherd, "UDP Usage
+              Guidelines", BCP 145, RFC 8085, DOI 10.17487/RFC8085,
+              March 2017, <https://www.rfc-editor.org/rfc/rfc8085>.
 
 Acknowledgments
 
