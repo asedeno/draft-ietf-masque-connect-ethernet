@@ -1873,14 +1873,14 @@ DATAGRAM frame.<a href="#section-9-3" class="pilcrow">¶</a></p>
         <h3 id="name-mtu-and-frame-ordering-cons">
 <a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-mtu-and-frame-ordering-cons" class="section-name selfRef">MTU and Frame Ordering Considerations</a>
         </h3>
-<p id="section-9.1-1">When using HTTP/3 with the QUIC Datagram extension <span>[<a href="#QUIC-DGRAM" class="cite xref">QUIC-DGRAM</a>]</span>, Ethernet
-frames can be transmitted in QUIC DATAGRAM frames. Since these frames cannot be
-fragmented, they can only carry Ethernet frames up to a given length determined by
-the QUIC connection configuration and the Path MTU (PMTU). Furthermore, the UDP
-packets carrying these frames could be reordered by the network. Implementations
-<span class="bcp14">SHOULD</span> rely on <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span>'s use of <span>[<a href="#DPLPMTUD" class="cite xref">DPLPMTUD</a>]</span> to probe and discover the
-PMTU over the connection's lifetime, and adjust any associated interface MTU as
-needed.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
+<p id="section-9.1-1">When using HTTP/3 with the QUIC Datagram extension <span>[<a href="#QUIC-DGRAM" class="cite xref">QUIC-DGRAM</a>]</span>,
+Ethernet frames can be transmitted in QUIC DATAGRAM frames. Since these frames
+cannot be fragmented, they can only carry Ethernet frames up to a given length
+determined by the QUIC connection configuration and the Path MTU
+(PMTU). Implementations <span class="bcp14">MAY</span> rely on <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span>'s use of <span>[<a href="#DPLPMTUD" class="cite xref">DPLPMTUD</a>]</span> to
+probe and discover the PMTU over the connection's lifetime, and adjust any
+associated interface MTU as needed. Furthermore, the UDP packets carrying these
+frames could be reordered by the network.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
 <p id="section-9.1-2">When using HTTP/1.1 or HTTP/2, and when using HTTP/3 without the QUIC Datagram
 extension <span>[<a href="#QUIC-DGRAM" class="cite xref">QUIC-DGRAM</a>]</span>, Ethernet frames are transmitted in DATAGRAM capsules as
 defined in <span>[<a href="#HTTP-DGRAM" class="cite xref">HTTP-DGRAM</a>]</span>. DATAGRAM capsules are transmitted reliably over an
