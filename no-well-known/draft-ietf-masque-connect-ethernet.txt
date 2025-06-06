@@ -4,8 +4,8 @@
 
 Multiplexed Application Substrate over QUIC Encryption      A. R. Sedeño
 Internet-Draft                                                Google LLC
-Intended status: Standards Track                           30 April 2025
-Expires: 1 November 2025
+Intended status: Standards Track                             6 June 2025
+Expires: 8 December 2025
 
 
                        Proxying Ethernet in HTTP
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 November 2025.
+   This Internet-Draft will expire on 8 December 2025.
 
 Copyright Notice
 
@@ -91,7 +91,6 @@ Table of Contents
    10. Security Considerations
    11. IANA Considerations
      11.1.  HTTP Upgrade Token
-     11.2.  Updates to the MASQUE URI Suffixes Registry
    12. References
      12.1.  Normative References
      12.2.  Informative References
@@ -158,14 +157,10 @@ Table of Contents
    Ethernet segments might add a "vlan-identifier" variable to specify
    which segment to connect to.  The optionality of variable needs to be
    considered when defining the template so that the variable is either
-   self-identifying or possible to exclude in the syntax.  URI Templates
-   specified for this protocol MAY use the well-known location
-   [WELL-KNOWN] registered by this document.
+   self-identifying or possible to exclude in the syntax.
 
    Examples are shown below:
 
-   https://example.org/.well-known/masque/ethernet/
-   https://example.org/.well-known/masque/ethernet/{vlan-identifier}/
    https://proxy.example.org:4443/masque/ethernet/
    https://proxy.example.org:4443/masque/ethernet?vlan={vlan-identifier}
    https://masque.example.org/?user=bob
@@ -238,11 +233,11 @@ Table of Contents
    status code.
 
    For example, if the client is configured with the URI Template
-   "https://example.org/.well-known/masque/ethernet/" and wishes to open
-   an Ethernet tunnel, it could send the following request.
+   "https://proxy.example.org/masque/ethernet/" and wishes to open an
+   Ethernet tunnel, it could send the following request.
 
-   GET https://example.org/.well-known/masque/ethernet/ HTTP/1.1
-   Host: example.org
+   GET /masque/ethernet/ HTTP/1.1
+   Host: proxy.example.org
    Connection: Upgrade
    Upgrade: connect-ethernet
    Capsule-Protocol: ?1
@@ -303,15 +298,15 @@ Table of Contents
    Section 4.1.2 of [HTTP/3].
 
    For example, if the client is configured with the URI Template
-   "https://example.org/.well-known/masque/ethernet/" and wishes to open
-   an Ethernet tunnel, it could send the following request.
+   "https://proxy.example.org/masque/ethernet/" and wishes to open an
+   Ethernet tunnel, it could send the following request.
 
    HEADERS
    :method = CONNECT
    :protocol = connect-ethernet
    :scheme = https
-   :path = /.well-known/masque/ethernet/
-   :authority = example.org
+   :path = /masque/ethernet/
+   :authority = proxy.example.org
    capsule-protocol = ?1
 
                  Figure 3: Example HTTP/2 or HTTP/3 Request
@@ -461,7 +456,7 @@ Table of Contents
    :method = CONNECT
    :protocol = connect-ethernet
    :scheme = https
-   :path = /.well-known/masque/ethernet/
+   :path = /masque/ethernet/
    :authority = proxy.example.com
    capsule-protocol = ?1
 
@@ -606,21 +601,6 @@ Table of Contents
    Expected Version Tokens:  None
    References:  This document
 
-11.2.  Updates to the MASQUE URI Suffixes Registry
-
-   This document will request IANA to register "ethernet" in the MASQUE
-   URI Suffixes Registry maintained at
-   <https://www.iana.org/assignments/masque>, created by Section 12.2 of
-   [CONNECT-IP].
-
-           +==============+===================+===============+
-           | Path Segment | Description       | Reference     |
-           +==============+===================+===============+
-           | ethernet     | Ethernet Proxying | This Document |
-           +--------------+-------------------+---------------+
-
-                     Table 1: New MASQUE URI Suffixes
-
 12.  References
 
 12.1.  Normative References
@@ -710,11 +690,6 @@ Table of Contents
               and D. Orchard, "URI Template", RFC 6570,
               DOI 10.17487/RFC6570, March 2012,
               <https://www.rfc-editor.org/rfc/rfc6570>.
-
-   [WELL-KNOWN]
-              Nottingham, M., "Well-Known Uniform Resource Identifiers
-              (URIs)", RFC 8615, DOI 10.17487/RFC8615, May 2019,
-              <https://www.rfc-editor.org/rfc/rfc8615>.
 
 12.2.  Informative References
 
