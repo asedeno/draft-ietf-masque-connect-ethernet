@@ -105,9 +105,9 @@ Table of Contents
    creating a TCP [TCP] tunnel to a destination, a similar mechanism for
    UDP [CONNECT-UDP], and an additional mechanism for IP [CONNECT-IP].
    However, these mechanisms can't carry Layer 2 frames without further
-   encapsulation inside of IP, for instance with EtherIP [ETHERIP], GUE
-   [GUE] or L2TP [L2TP] [L2TPv3], which consume additional header bytes,
-   reducing the available MTU.
+   encapsulation inside of IP, for instance with EtherIP [ETHERIP] or
+   L2TP [L2TP] [L2TPv3], which consume additional header bytes, reducing
+   the available MTU.
 
    This document describes a protocol for exchanging Ethernet frames
    with an HTTP server.  Either participant in the HTTP connection can
@@ -775,12 +775,6 @@ Table of Contents
               Ethernet Frames in IP Datagrams", RFC 3378,
               DOI 10.17487/RFC3378, September 2002,
               <https://www.rfc-editor.org/rfc/rfc3378>.
-
-   [GUE]      Herbert, T., Yong, L., and O. Zia, "Generic UDP
-              Encapsulation", Work in Progress, Internet-Draft, draft-
-              ietf-intarea-gue-09, 26 October 2019,
-              <https://datatracker.ietf.org/doc/html/draft-ietf-intarea-
-              gue-09>.
 
    [L2TP]     Townsley, W., Valencia, A., Rubens, A., Pall, G., Zorn,
               G., and B. Palter, "Layer Two Tunneling Protocol "L2TP"",

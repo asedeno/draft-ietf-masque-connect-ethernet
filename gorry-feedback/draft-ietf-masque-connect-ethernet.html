@@ -1267,9 +1267,8 @@ creating a TCP <span>[<a href="#TCP" class="cite xref">TCP</a>]</span> tunnel to
 UDP <span>[<a href="#CONNECT-UDP" class="cite xref">CONNECT-UDP</a>]</span>, and an additional mechanism for IP
 <span>[<a href="#CONNECT-IP" class="cite xref">CONNECT-IP</a>]</span>. However, these mechanisms can't carry Layer 2 frames
 without further encapsulation inside of IP, for instance with EtherIP
-<span>[<a href="#ETHERIP" class="cite xref">ETHERIP</a>]</span>, GUE <span>[<a href="#GUE" class="cite xref">GUE</a>]</span> or L2TP
-<span>[<a href="#L2TP" class="cite xref">L2TP</a>]</span> <span>[<a href="#L2TPv3" class="cite xref">L2TPv3</a>]</span>, which consume additional header bytes,
-reducing the available MTU.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<span>[<a href="#ETHERIP" class="cite xref">ETHERIP</a>]</span> or L2TP <span>[<a href="#L2TP" class="cite xref">L2TP</a>]</span> <span>[<a href="#L2TPv3" class="cite xref">L2TPv3</a>]</span>, which
+consume additional header bytes, reducing the available MTU.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">This document describes a protocol for exchanging Ethernet frames with an HTTP
 server. Either participant in the HTTP connection can then relay Ethernet
 frames to and from a local or virtual interface, allowing the bridging of two
@@ -2154,10 +2153,6 @@ created by <span><a href="https://rfc-editor.org/rfc/rfc9484#section-12.2" class
 <dt id="ETHERIP">[ETHERIP]</dt>
         <dd>
 <span class="refAuthor">Housley, R.</span> and <span class="refAuthor">S. Hollenbeck</span>, <span class="refTitle">"EtherIP: Tunneling Ethernet Frames in IP Datagrams"</span>, <span class="seriesInfo">RFC 3378</span>, <span class="seriesInfo">DOI 10.17487/RFC3378</span>, <time datetime="2002-09" class="refDate">September 2002</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3378">https://www.rfc-editor.org/rfc/rfc3378</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="GUE">[GUE]</dt>
-        <dd>
-<span class="refAuthor">Herbert, T.</span>, <span class="refAuthor">Yong, L.</span>, and <span class="refAuthor">O. Zia</span>, <span class="refTitle">"Generic UDP Encapsulation"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-intarea-gue-09</span>, <time datetime="2019-10-26" class="refDate">26 October 2019</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-intarea-gue-09">https://datatracker.ietf.org/doc/html/draft-ietf-intarea-gue-09</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="L2TP">[L2TP]</dt>
         <dd>
