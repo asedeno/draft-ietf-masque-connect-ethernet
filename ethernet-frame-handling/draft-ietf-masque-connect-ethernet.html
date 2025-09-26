@@ -13,7 +13,7 @@ specifically, this document defines a protocol that allows an HTTP client to
 create a tunnel to exchange Layer 2 Ethernet frames through an HTTP server
 with an attached physical or virtual Ethernet segment. 
     " name="description">
-<meta content="xml2rfc 3.30.0" name="generator">
+<meta content="xml2rfc 3.30.2" name="generator">
 <meta content="quic" name="keyword">
 <meta content="http" name="keyword">
 <meta content="datagram" name="keyword">
@@ -26,17 +26,17 @@ with an attached physical or virtual Ethernet segment.
 <meta content="ethernet" name="keyword">
 <meta content="draft-ietf-masque-connect-ethernet-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.30.0
+  xml2rfc 3.30.2
     Python 3.12.11
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
     lxml 5.3.1
-    platformdirs 4.3.8
+    platformdirs 4.4.0
     pycountry 24.6.1
     PyYAML 6.0.2
-    requests 2.32.4
+    requests 2.32.5
     setuptools 80.9.0
     wcwidth 0.2.13
 -->
@@ -1057,11 +1057,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">CONNECT-ETHERNET</td>
-<td class="right">July 2025</td>
+<td class="right">September 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sedeño</td>
-<td class="center">Expires 30 January 2026</td>
+<td class="center">Expires 30 March 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1074,12 +1074,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-masque-connect-ethernet-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-07-29" class="published">29 July 2025</time>
+<time datetime="2025-09-26" class="published">26 September 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-01-30">30 January 2026</time></dd>
+<dd class="expires"><time datetime="2026-03-30">30 March 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1133,7 +1133,7 @@ with an attached physical or virtual Ethernet segment.<a href="#section-abstract
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 30 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 30 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1271,16 +1271,17 @@ without further encapsulation inside of IP, for instance with EtherIP
 consume additional header bytes, reducing the available MTU.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">This document describes a protocol for exchanging Ethernet frames with an HTTP
 server. Either participant in the HTTP connection can then relay Ethernet
-frames to and from a local or virtual interface, allowing the bridging of two
-Ethernet broadcast domains to establish a Layer 2 VPN. This can simplify
-connectivity to network-connected appliances that are configured to only
-interact with peers on the same Ethernet broadcast domain.<a href="#section-1-2" class="pilcrow">¶</a></p>
+frames to and from a local or virtual interface. This can be used by a node to
+support remote bridging of two Ethernet broadcast domains to establish a Layer
+2 VPN. This can simplify connectivity to network-connected appliances that are
+configured to only interact with peers connected to the same Ethernet
+broadcast domain.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">This protocol supports all existing versions of HTTP by using HTTP Datagrams
 <span>[<a href="#HTTP-DGRAM" class="cite xref">HTTP-DGRAM</a>]</span>. When using HTTP/2 <span>[<a href="#H2" class="cite xref">HTTP/2</a>]</span> or HTTP/3 <span>[<a href="#H3" class="cite xref">HTTP/3</a>]</span>, it uses
 HTTP Extended CONNECT as described in <span>[<a href="#EXT-CONNECT2" class="cite xref">EXT-CONNECT2</a>]</span> and
 <span>[<a href="#EXT-CONNECT3" class="cite xref">EXT-CONNECT3</a>]</span>. When using HTTP/1.x <span>[<a href="#H1" class="cite xref">HTTP/1.1</a>]</span>, it uses HTTP Upgrade as
 defined in <span><a href="https://rfc-editor.org/rfc/rfc9110#section-7.8" class="relref">Section 7.8</a> of [<a href="#HTTP" class="cite xref">HTTP</a>]</span>.<a href="#section-1-3" class="pilcrow">¶</a></p>
-<p id="section-1-4">This protocol necessarily involves additional framing overhead. When possible,
+<p id="section-1-4">This protocol necessarily incurs additional encapsulation overhead. When possible,
 users should use higher-level proxying protocols, such as connect-ip or
 connect-udp.<a href="#section-1-4" class="pilcrow">¶</a></p>
 </section>
@@ -1328,7 +1329,7 @@ https://proxy.example.org:4443/masque/ethernet/
 https://masque.example.org/?user=bob
 </pre><a href="#section-3-3" class="pilcrow">¶</a>
 </div>
-<p id="section-3-4">An implementation that supports connecting to different Ethernet segments might
+<p id="section-3-4">An implementation that supports connecting to multiple Ethernet segments might
 add a "vlan-identifier" variable to specify which segment to connect to. The
 optionality of variables needs to be considered when defining the template so
 that variables are either self-identifying or possible to exclude in the syntax.
@@ -1603,12 +1604,11 @@ capsule-protocol = ?1
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-context-identifiers" class="section-name selfRef">Context Identifiers</a>
       </h2>
 <p id="section-5-1">The mechanism for proxying Ethernet in HTTP defined in this document allows
-future extensions to exchange HTTP Datagrams that carry different semantics from
-Ethernet frames. Some of these extensions could augment Ethernet payloads with
-additional data or compress Ethernet frame header fields, while others could
-exchange data that is completely separate from Ethernet payloads. In order to
-accomplish this, all HTTP Datagrams associated with Ethernet proxying requests
-streams start with a Context ID field; see <a href="#payload-format" class="auto internal xref">Section 6</a>.<a href="#section-5-1" class="pilcrow">¶</a></p>
+future extensions to exchange HTTP Datagrams that have different semantics,
+similar to the extension mechanisms specified in <span><a href="https://rfc-editor.org/rfc/rfc9484#section-5" class="relref">Section 5</a> of [<a href="#CONNECT-IP" class="cite xref">CONNECT-IP</a>]</span>. Some of these extensions could augment Ethernet payloads with
+additional data or compress Ethernet frame header fields. To provide this
+extension point, all HTTP Datagrams associated with Ethernet proxying
+request streams start with a Context ID field; see <a href="#payload-format" class="auto internal xref">Section 6</a>.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <p id="section-5-2">Context IDs are 62-bit integers (0-2<sup>62</sup>-1). Context IDs are encoded as
 variable-length integers; see <span><a href="https://rfc-editor.org/rfc/rfc9000#section-16" class="relref">Section 16</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>. The Context ID value of 0
 is reserved for Ethernet payloads, while non-zero values are dynamically
@@ -1679,6 +1679,16 @@ zero. When the Context ID is set to zero, the Payload field contains a full
 Layer 2 Ethernet Frame (from the MAC destination field until the last byte of
 the Frame check sequence field), as defined by IEEE 802.3, with support for
 optional IEEE 802.1Q tagging (see <a href="#vlan-recommendations" class="auto internal xref">Section 9.2</a>).<a href="#section-6-5" class="pilcrow">¶</a></p>
+<p id="section-6-6">If an Ethernet proxy receives an HTTP Datagram before it has received the
+corresponding request, it <span class="bcp14">SHALL</span> either drop that HTTP Datagram silently or
+buffer it temporarily (on the order of a round trip) while awaiting the
+corresponding request.<a href="#section-6-6" class="pilcrow">¶</a></p>
+<p id="section-6-7">Note that buffering datagrams (either because the request was not yet received
+or because the Context ID is not yet known) consumes resources. Receivers that
+buffer datagrams <span class="bcp14">SHOULD</span> apply buffering limits in order to reduce the risk of
+resource exhaustion occurring. For example, receivers can limit the total number
+of buffered datagrams or the cumulative size of buffered datagrams on a
+per-stream, per-context, or per-connection basis.<a href="#section-6-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="ethernet-frame-handling">
@@ -1687,13 +1697,17 @@ optional IEEE 802.1Q tagging (see <a href="#vlan-recommendations" class="auto in
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-ethernet-frame-handling" class="section-name selfRef">Ethernet Frame Handling</a>
       </h2>
 <p id="section-7-1">This document defines a tunnelling mechanism that is conceptually an Ethernet
-link. Implementations might need to handle some of the responsibilities of an
+link. An Ethernet proxying connection established between two Ethernet proxying
+endpoints emulates a single Ethernet link between those two endpoints. This
+provides an Ethernet MAC service that will deliver each Ethernet frame that is
+received at the ingress to the egress at the other end of the tunnel.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-2">Implementations might need to handle some of the responsibilities of an
 Ethernet switch or bridge if they do not delegate them to another implementation
 such as a kernel. Those responsibilities are beyond the scope of this document,
 and include, but are not limited to, the handling of broadcast packets and
-multicast groups, or the local termination of PAUSE frames.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">If an Ethernet proxying endpoint fails to deliver a frame to an underlying
-Ethernet segment, the endpoint <span class="bcp14">MUST</span> drop the frame.<a href="#section-7-2" class="pilcrow">¶</a></p>
+multicast groups, or the local termination of PAUSE frames.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-7-3">If an Ethernet proxying endpoint fails to deliver a frame to an underlying
+Ethernet segment, the endpoint <span class="bcp14">MUST</span> drop the frame.<a href="#section-7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="examples">
@@ -1902,8 +1916,8 @@ Frames <span class="bcp14">MAY</span> be done in cases where the content of the 
 identified to be congestion controlled traffic.<a href="#section-9-1" class="pilcrow">¶</a></p>
 <p id="section-9-2">Some implementations might find it benefitial to maintain a small buffer of
 frames to be sent through the tunnel to smooth out short term variations and
-bursts in tunnel capacity. Any such buffer <span class="bcp14">MUST</span> be limited, and when exceeded
-any Ethernet frames that would otherwise be buffered <span class="bcp14">MUST</span> be dropped.<a href="#section-9-2" class="pilcrow">¶</a></p>
+bursts in tunnel capacity. As such a buffer is limited, Ethernet frames can get
+dropped when the buffer limit is exceeded.<a href="#section-9-2" class="pilcrow">¶</a></p>
 <p id="section-9-3">When the protocol running inside the tunnel uses loss recovery (e.g., <span>[<a href="#TCP" class="cite xref">TCP</a>]</span> or
 <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span>) and the outer HTTP connection runs over TCP, the proxied traffic will
 incur at least two nested loss recovery mechanisms. This can reduce performance,
@@ -2164,7 +2178,7 @@ created by <span><a href="https://rfc-editor.org/rfc/rfc9484#section-12.2" class
 <dd class="break"></dd>
 <dt id="OPTIMISTIC">[OPTIMISTIC]</dt>
         <dd>
-<span class="refAuthor">Schwartz, B. M.</span>, <span class="refTitle">"Security Considerations for Optimistic Protocol Transitions in HTTP/1.1"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-httpbis-optimistic-upgrade-04</span>, <time datetime="2025-06-11" class="refDate">11 June 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-optimistic-upgrade-04">https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-optimistic-upgrade-04</a>&gt;</span>. </dd>
+<span class="refAuthor">Schwartz, B. M.</span>, <span class="refTitle">"Security Considerations for Optimistic Protocol Transitions in HTTP/1.1"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-httpbis-optimistic-upgrade-06</span>, <time datetime="2025-09-18" class="refDate">18 September 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-optimistic-upgrade-06">https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-optimistic-upgrade-06</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC4861">[RFC4861]</dt>
         <dd>

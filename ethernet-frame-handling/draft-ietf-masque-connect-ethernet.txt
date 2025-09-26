@@ -4,8 +4,8 @@
 
 Multiplexed Application Substrate over QUIC Encryption      A. R. Sedeño
 Internet-Draft                                                Google LLC
-Intended status: Standards Track                            29 July 2025
-Expires: 30 January 2026
+Intended status: Standards Track                       26 September 2025
+Expires: 30 March 2026
 
 
                        Proxying Ethernet in HTTP
@@ -53,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 January 2026.
+   This Internet-Draft will expire on 30 March 2026.
 
 Copyright Notice
 
@@ -111,11 +111,12 @@ Table of Contents
 
    This document describes a protocol for exchanging Ethernet frames
    with an HTTP server.  Either participant in the HTTP connection can
-   then relay Ethernet frames to and from a local or virtual interface,
-   allowing the bridging of two Ethernet broadcast domains to establish
-   a Layer 2 VPN.  This can simplify connectivity to network-connected
-   appliances that are configured to only interact with peers on the
-   same Ethernet broadcast domain.
+   then relay Ethernet frames to and from a local or virtual interface.
+   This can be used by a node to support remote bridging of two Ethernet
+   broadcast domains to establish a Layer 2 VPN.  This can simplify
+   connectivity to network-connected appliances that are configured to
+   only interact with peers connected to the same Ethernet broadcast
+   domain.
 
    This protocol supports all existing versions of HTTP by using HTTP
    Datagrams [HTTP-DGRAM].  When using HTTP/2 [HTTP/2] or HTTP/3
@@ -123,9 +124,9 @@ Table of Contents
    [EXT-CONNECT2] and [EXT-CONNECT3].  When using HTTP/1.x [HTTP/1.1],
    it uses HTTP Upgrade as defined in Section 7.8 of [HTTP].
 
-   This protocol necessarily involves additional framing overhead.  When
-   possible, users should use higher-level proxying protocols, such as
-   connect-ip or connect-udp.
+   This protocol necessarily incurs additional encapsulation overhead.
+   When possible, users should use higher-level proxying protocols, such
+   as connect-ip or connect-udp.
 
 2.  Conventions and Definitions
 
@@ -169,7 +170,7 @@ Table of Contents
    https://proxy.example.org:4443/masque/ethernet/
    https://masque.example.org/?user=bob
 
-   An implementation that supports connecting to different Ethernet
+   An implementation that supports connecting to multiple Ethernet
    segments might add a "vlan-identifier" variable to specify which
    segment to connect to.  The optionality of variables needs to be
    considered when defining the template so that variables are either
@@ -385,13 +386,13 @@ Table of Contents
 5.  Context Identifiers
 
    The mechanism for proxying Ethernet in HTTP defined in this document
-   allows future extensions to exchange HTTP Datagrams that carry
-   different semantics from Ethernet frames.  Some of these extensions
-   could augment Ethernet payloads with additional data or compress
-   Ethernet frame header fields, while others could exchange data that
-   is completely separate from Ethernet payloads.  In order to
-   accomplish this, all HTTP Datagrams associated with Ethernet proxying
-   requests streams start with a Context ID field; see Section 6.
+   allows future extensions to exchange HTTP Datagrams that have
+   different semantics, similar to the extension mechanisms specified in
+   Section 5 of [CONNECT-IP].  Some of these extensions could augment
+   Ethernet payloads with additional data or compress Ethernet frame
+   header fields.  To provide this extension point, all HTTP Datagrams
+   associated with Ethernet proxying request streams start with a
+   Context ID field; see Section 6.
 
    Context IDs are 62-bit integers (0-2^62-1).  Context IDs are encoded
    as variable-length integers; see Section 16 of [QUIC].  The Context
@@ -454,15 +455,34 @@ Table of Contents
    defined by IEEE 802.3, with support for optional IEEE 802.1Q tagging
    (see Section 9.2).
 
+   If an Ethernet proxy receives an HTTP Datagram before it has received
+   the corresponding request, it SHALL either drop that HTTP Datagram
+   silently or buffer it temporarily (on the order of a round trip)
+   while awaiting the corresponding request.
+
+   Note that buffering datagrams (either because the request was not yet
+   received or because the Context ID is not yet known) consumes
+   resources.  Receivers that buffer datagrams SHOULD apply buffering
+   limits in order to reduce the risk of resource exhaustion occurring.
+   For example, receivers can limit the total number of buffered
+   datagrams or the cumulative size of buffered datagrams on a per-
+   stream, per-context, or per-connection basis.
+
 7.  Ethernet Frame Handling
 
    This document defines a tunnelling mechanism that is conceptually an
-   Ethernet link.  Implementations might need to handle some of the
-   responsibilities of an Ethernet switch or bridge if they do not
-   delegate them to another implementation such as a kernel.  Those
-   responsibilities are beyond the scope of this document, and include,
-   but are not limited to, the handling of broadcast packets and
-   multicast groups, or the local termination of PAUSE frames.
+   Ethernet link.  An Ethernet proxying connection established between
+   two Ethernet proxying endpoints emulates a single Ethernet link
+   between those two endpoints.  This provides an Ethernet MAC service
+   that will deliver each Ethernet frame that is received at the ingress
+   to the egress at the other end of the tunnel.
+
+   Implementations might need to handle some of the responsibilities of
+   an Ethernet switch or bridge if they do not delegate them to another
+   implementation such as a kernel.  Those responsibilities are beyond
+   the scope of this document, and include, but are not limited to, the
+   handling of broadcast packets and multicast groups, or the local
+   termination of PAUSE frames.
 
    If an Ethernet proxying endpoint fails to deliver a frame to an
    underlying Ethernet segment, the endpoint MUST drop the frame.
@@ -564,9 +584,9 @@ Table of Contents
 
    Some implementations might find it benefitial to maintain a small
    buffer of frames to be sent through the tunnel to smooth out short
-   term variations and bursts in tunnel capacity.  Any such buffer MUST
-   be limited, and when exceeded any Ethernet frames that would
-   otherwise be buffered MUST be dropped.
+   term variations and bursts in tunnel capacity.  As such a buffer is
+   limited, Ethernet frames can get dropped when the buffer limit is
+   exceeded.
 
    When the protocol running inside the tunnel uses loss recovery (e.g.,
    [TCP] or [QUIC]) and the outer HTTP connection runs over TCP, the
@@ -789,9 +809,9 @@ Table of Contents
    [OPTIMISTIC]
               Schwartz, B. M., "Security Considerations for Optimistic
               Protocol Transitions in HTTP/1.1", Work in Progress,
-              Internet-Draft, draft-ietf-httpbis-optimistic-upgrade-04,
-              11 June 2025, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-httpbis-optimistic-upgrade-04>.
+              Internet-Draft, draft-ietf-httpbis-optimistic-upgrade-06,
+              18 September 2025, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-httpbis-optimistic-upgrade-06>.
 
    [RFC4861]  Narten, T., Nordmark, E., Simpson, W., and H. Soliman,
               "Neighbor Discovery for IP version 6 (IPv6)", RFC 4861,
