@@ -4,8 +4,8 @@
 
 Multiplexed Application Substrate over QUIC Encryption      A. R. Sedeño
 Internet-Draft                                                Google LLC
-Intended status: Standards Track                          2 October 2025
-Expires: 5 April 2026
+Intended status: Standards Track                          8 October 2025
+Expires: 11 April 2026
 
 
                        Proxying Ethernet in HTTP
@@ -53,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 April 2026.
+   This Internet-Draft will expire on 11 April 2026.
 
 Copyright Notice
 
@@ -770,13 +770,6 @@ Table of Contents
               December 2022,
               <https://doi.org/10.1109/ieeestd.2022.10004498>.
 
-   [IEEE802.1X]
-              "IEEE Standard for Local and Metropolitan Area Networks--
-              Port-Based Network Access Control", IEEE,
-              DOI 10.1109/ieeestd.2020.9018454, ISBN ["9781504464406"],
-              February 2020,
-              <https://doi.org/10.1109/ieeestd.2020.9018454>.
-
    [IEEE802.3]
               "IEEE Standard for Ethernet", IEEE,
               DOI 10.1109/ieeestd.2022.9844436, ISBN ["9781504487252"],
@@ -827,6 +820,13 @@ Table of Contents
               Ethernet Frames in IP Datagrams", RFC 3378,
               DOI 10.17487/RFC3378, September 2002,
               <https://www.rfc-editor.org/rfc/rfc3378>.
+
+   [IEEE802.1X]
+              "IEEE Standard for Local and Metropolitan Area Networks--
+              Port-Based Network Access Control", IEEE,
+              DOI 10.1109/ieeestd.2020.9018454, ISBN ["9781504464406"],
+              February 2020,
+              <https://doi.org/10.1109/ieeestd.2020.9018454>.
 
    [L2TP]     Townsley, W., Valencia, A., Rubens, A., Pall, G., Zorn,
               G., and B. Palter, "Layer Two Tunneling Protocol "L2TP"",
