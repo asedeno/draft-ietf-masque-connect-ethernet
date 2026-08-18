@@ -66,9 +66,9 @@ with an attached physical or virtual Ethernet segment.
 # Introduction
 
 HTTP provides the CONNECT method (see {{Section 9.3.6 of !HTTP=RFC9110}}) for
-creating a TCP {{!TCP=RFC9293}} tunnel to a destination, a similar mechanism for
-UDP {{!CONNECT-UDP=RFC9298}}, and an additional mechanism for IP
-{{!CONNECT-IP=RFC9484}}. However, these mechanisms cannot carry Layer 2 frames
+creating a TCP {{?TCP=RFC9293}} tunnel to a destination, a similar mechanism for
+UDP {{?CONNECT-UDP=RFC9298}}, and an additional mechanism for IP
+{{?CONNECT-IP=RFC9484}}. However, these mechanisms cannot carry Layer 2 frames
 without further encapsulation inside of IP, for instance with EtherIP
 {{?ETHERIP=RFC3378}} or L2TP {{?L2TP=RFC2661}} {{?L2TPv3=RFC3931}}, which
 consume additional header bytes, reducing the available MTU.
@@ -348,7 +348,7 @@ streams start with a Context ID field; see {{payload-format}}.
 Context IDs are 62-bit integers (0-2<sup>62</sup>-1). Context IDs are encoded as
 variable-length integers; see {{Section 16 of QUIC}}. The Context ID value of 0
 is reserved for Ethernet payloads, while non-zero values are dynamically
-allocated. Non-zero even-numbered Context-IDs are client allocated, and
+allocated. Non-zero even-numbered Context IDs are client-allocated, and
 odd-numbered Context IDs are proxy-allocated. The Context ID namespace is tied
 to a given HTTP request; it is possible for a Context ID with the same numeric
 value to be simultaneously allocated in distinct requests, potentially with
@@ -653,8 +653,8 @@ parsed a successful Ethernet proxying response.
 
 ## HTTP Upgrade Token
 
-This document will request IANA to register "connect-ethernet" in the HTTP
-Upgrade Token Registry maintained at
+IANA is requested to register "connect-ethernet" in the HTTP Upgrade Token
+Registry maintained at
 <[](https://www.iana.org/assignments/http-upgrade-tokens)>.
 
 Value:
@@ -676,9 +676,9 @@ References:
 
 ## Updates to the MASQUE URI Suffixes Registry {#iana-suffix}
 
-This document will request IANA to register "ethernet" in the MASQUE URI
-Suffixes Registry maintained at <[](https://www.iana.org/assignments/masque)>,
-created by {{Section 12.2 of CONNECT-IP}}.
+IANA is requested to register "ethernet" in the MASQUE URI Suffixes Registry
+maintained at <[](https://www.iana.org/assignments/masque)>, created by
+{{Section 12.2 of CONNECT-IP}}.
 
 | Path Segment |    Description    |   Reference   |
 |:-------------|:------------------|:--------------|
