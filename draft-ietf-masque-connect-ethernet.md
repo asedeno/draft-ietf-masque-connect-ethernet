@@ -118,9 +118,13 @@ entire connection.
 Clients are configured to use Ethernet proxying over HTTP via a URI Template
 {{!TEMPLATE=RFC6570}}. The URI Templates used by this protocol do not require
 any variables, and this document does not define any; implementations or
-extensions MAY specify their own. URI Templates specified for this protocol MAY
-use the well-known location {{!WELL-KNOWN=RFC8615}} registered by this document
-(see {{iana-suffix}}).
+extensions MAY specify their own. The optionality of variables needs to be
+considered when defining the template so that variables are either
+self-identifying or possible to exclude in the syntax. How valid values for such
+variables are formatted, communicated, or validated is not a part of this
+protocol. URI Templates specified for this protocol MAY use the well-known
+location {{!WELL-KNOWN=RFC8615}} registered by this document (see
+{{iana-suffix}}).
 
 Examples are shown below:
 
@@ -128,20 +132,6 @@ Examples are shown below:
 https://example.org/.well-known/masque/ethernet/
 https://proxy.example.org:4443/masque/ethernet/
 https://masque.example.org/?user=bob
-~~~
-
-An implementation or extension that supports connecting to multiple Ethernet
-segments might define its own variables, such as a "vlan-identifier" to specify
-the target segment. The optionality of variables needs to be considered when
-defining the template so that variables are either self-identifying or possible
-to exclude in the syntax. How valid values for such variables are formatted,
-communicated, or validated is not a part of this protocol.
-
-Hypothetical examples are shown below:
-
-~~~
-https://proxy.example.org:4443/masque/ethernet?vlan={vlan-identifier}
-https://etherproxy.example.org/{vlan-identifier}
 ~~~
 
 The following requirements apply to the URI Template:
