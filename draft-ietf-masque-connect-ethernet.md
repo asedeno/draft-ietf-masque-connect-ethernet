@@ -393,14 +393,14 @@ field. Note that this field can be empty.
 Ethernet frames are encoded using HTTP Datagrams with the Context ID set to
 zero. When the Context ID is set to zero, the Payload field contains a full
 Layer 2 Ethernet Frame (from the start of the Destination Address field through
-the end of the Frame Check Sequence field), as defined by IEEE 802.3
-{{IEEE802.3}}. A complete frame could include an IEEE 802.1Q {{IEEE802.1Q}} tag
-(see {{vlan-recommendations}}).
+the last byte before the Frame Check Sequence (FCS) field), as defined by IEEE
+802.3 {{IEEE802.3}}. A complete frame could include an IEEE 802.1Q
+{{IEEE802.1Q}} tag (see {{vlan-recommendations}}).
 
-The Frame Check Sequence field is included in the proxied Ethernet frame rather
-than being omitted and recomputed by the Ethernet proxying endpoints for
-simplicity and to reduce compute requirements, though a future extension could
-introduce a different encoding.
+The Frame Check Sequence field is omitted from proxied Ethernet frames to reduce
+overhead and because standard network interfaces strip the FCS on ingress and
+regenerate it on egress. A future extension could introduce an encoding that
+includes the FCS.
 
 If an Ethernet proxy receives an HTTP Datagram before it has received the
 corresponding request, it SHALL either drop that HTTP Datagram silently or
