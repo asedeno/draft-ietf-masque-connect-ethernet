@@ -4,11 +4,11 @@
 
 Multiplexed Application Substrate over QUIC Encryption      A. R. Sedeño
 Internet-Draft                                                Google LLC
-Intended status: Standards Track                          8 October 2025
-Expires: 11 April 2026
+Intended status: Standards Track                       25 September 2026
+Expires: 29 March 2027
 
 
-                       Proxying Ethernet in HTTP
+                    Proxying Ethernet Frames in HTTP
                draft-ietf-masque-connect-ethernet-latest
 
 Abstract
@@ -53,11 +53,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 April 2026.
+   This Internet-Draft will expire on 29 March 2027.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -74,7 +74,7 @@ Table of Contents
    1.  Introduction
    2.  Conventions and Definitions
    3.  Configuration of Clients
-   4.  Tunnelling Ethernet over HTTP
+   4.  Tunnelling Ethernet frames over HTTP
      4.1.  Ethernet Proxy Handling
      4.2.  HTTP/1.1 Request
      4.3.  HTTP/1.1 Response
@@ -104,7 +104,7 @@ Table of Contents
    HTTP provides the CONNECT method (see Section 9.3.6 of [HTTP]) for
    creating a TCP [TCP] tunnel to a destination, a similar mechanism for
    UDP [CONNECT-UDP], and an additional mechanism for IP [CONNECT-IP].
-   However, these mechanisms can't carry Layer 2 frames without further
+   However, these mechanisms cannot carry Layer 2 frames without further
    encapsulation inside of IP, for instance with EtherIP [ETHERIP] or
    L2TP [L2TP] [L2TPv3], which consume additional header bytes, reducing
    the available MTU.
@@ -126,7 +126,7 @@ Table of Contents
 
    This protocol necessarily incurs additional encapsulation overhead.
    When possible, users should use higher-level proxying protocols, such
-   as connect-ip or connect-udp.
+   as [CONNECT-IP] or [CONNECT-UDP].
 
 2.  Conventions and Definitions
 
@@ -160,9 +160,14 @@ Table of Contents
 
    Clients are configured to use Ethernet proxying over HTTP via a URI
    Template [TEMPLATE].  The URI Templates used by this protocol do not
-   require any variables; implementations or extensions MAY specify
-   their own.  URI Templates specified for this protocol MAY use the
-   well-known location [WELL-KNOWN] registered by this document.
+   require any variables, and this document does not define any;
+   implementations or extensions MAY specify their own.  The optionality
+   of variables needs to be considered when defining the template so
+   that variables are either self-identifying or possible to exclude in
+   the syntax.  How valid values for such variables are formatted,
+   communicated, or validated is not a part of this protocol.  URI
+   Templates specified for this protocol MAY use the well-known location
+   [WELL-KNOWN] registered by this document (see Section 11.2).
 
    Examples are shown below:
 
@@ -170,25 +175,14 @@ Table of Contents
    https://proxy.example.org:4443/masque/ethernet/
    https://masque.example.org/?user=bob
 
-   An implementation that supports connecting to multiple Ethernet
-   segments might add a "vlan-identifier" variable to specify which
-   segment to connect to.  The optionality of variables needs to be
-   considered when defining the template so that variables are either
-   self-identifying or possible to exclude in the syntax.  How valid
-   values for such variables are communicated to the client is not a
-   part of this protocol.
-
-   Hypothetical examples are shown below:
-
-   https://proxy.example.org:4443/masque/ethernet?vlan={vlan-identifier}
-   https://etherproxy.example.org/{vlan-identifier}
-
    The following requirements apply to the URI Template:
 
-   *  The URI Template MUST be a level 3 template or lower.
+   *  The URI Template MUST be a template of type level 3 or lower (see
+      Section 1.2 of [TEMPLATE]).
 
-   *  The URI Template MUST be in absolute form and MUST include non-
-      empty scheme, authority, and path components.
+   *  The URI Template MUST be in absolute form (see Section 4.3 of
+      [URI]) and MUST include non-empty scheme, authority, and path
+      components.
 
    *  The path component of the URI Template MUST start with a slash
       "/".
@@ -213,9 +207,9 @@ Table of Contents
    reject its configuration and abort the request without sending it to
    the Ethernet proxy.
 
-4.  Tunnelling Ethernet over HTTP
+4.  Tunnelling Ethernet frames over HTTP
 
-   To allow negotiation of a tunnel for Ethernet over HTTP, this
+   To allow negotiation of a tunnel for Ethernet frames over HTTP, this
    document defines the "connect-ethernet" HTTP upgrade token.  The
    resulting Ethernet tunnels use the Capsule Protocol (see Section 3.2
    of [HTTP-DGRAM]) with HTTP Datagrams in the format defined in
@@ -335,7 +329,7 @@ Table of Contents
    *  The :protocol pseudo-header field SHALL be "connect-ethernet".
 
    *  The :authority pseudo-header field SHALL contain the authority of
-      the IP proxy.
+      the Ethernet proxy.
 
    *  The :path and :scheme pseudo-header fields SHALL NOT be empty.
       Their values SHALL contain the scheme and path from the configured
@@ -385,20 +379,20 @@ Table of Contents
 
 5.  Context Identifiers
 
-   The mechanism for proxying Ethernet in HTTP defined in this document
-   allows future extensions to exchange HTTP Datagrams that have
-   different semantics, similar to the extension mechanisms specified in
-   Section 5 of [CONNECT-IP].  Some of these extensions could augment
-   Ethernet payloads with additional data or compress Ethernet frame
-   header fields.  To provide this extension point, all HTTP Datagrams
-   associated with Ethernet proxying request streams start with a
-   Context ID field; see Section 6.
+   The mechanism for proxying Ethernet frames in HTTP defined in this
+   document allows future extensions to exchange HTTP Datagrams that
+   have different semantics, similar to the extension mechanisms
+   specified in Section 5 of [CONNECT-IP].  Some of these extensions
+   could augment Ethernet payloads with additional data or compress
+   Ethernet frame header fields.  To provide this extension point, all
+   HTTP Datagrams associated with Ethernet proxying request streams
+   start with a Context ID field; see Section 6.
 
    Context IDs are 62-bit integers (0-2^62-1).  Context IDs are encoded
    as variable-length integers; see Section 16 of [QUIC].  The Context
    ID value of 0 is reserved for Ethernet payloads, while non-zero
-   values are dynamically allocated.  Non-zero even-numbered Context-IDs
-   are client allocated, and odd-numbered Context IDs are proxy-
+   values are dynamically allocated.  Non-zero even-numbered Context IDs
+   are client-allocated, and odd-numbered Context IDs are proxy-
    allocated.  The Context ID namespace is tied to a given HTTP request;
    it is possible for a Context ID with the same numeric value to be
    simultaneously allocated in distinct requests, potentially with
@@ -450,10 +444,16 @@ Table of Contents
 
    Ethernet frames are encoded using HTTP Datagrams with the Context ID
    set to zero.  When the Context ID is set to zero, the Payload field
-   contains a full Layer 2 Ethernet Frame (from the MAC destination
-   field until the last byte of the Frame check sequence field), as
-   defined by IEEE 802.3 [IEEE802.3].  A complete frame could include
-   include an IEEE 802.1Q [IEEE802.1Q] tag (see Section 9.2).
+   contains a full Layer 2 Ethernet Frame (from the start of the
+   Destination Address field through the last byte before the Frame
+   Check Sequence (FCS) field), as defined by IEEE 802.3 [IEEE802.3].  A
+   complete frame could include an IEEE 802.1Q [IEEE802.1Q] tag (see
+   Section 9.2).
+
+   The Frame Check Sequence field is omitted from proxied Ethernet
+   frames to reduce overhead and because standard network interfaces
+   strip the FCS on ingress and regenerate it on egress.  A future
+   extension could introduce an encoding that includes the FCS.
 
    If an Ethernet proxy receives an HTTP Datagram before it has received
    the corresponding request, it SHALL either drop that HTTP Datagram
@@ -481,11 +481,22 @@ Table of Contents
    the responsibilities of an Ethernet switch or bridge if they do not
    delegate them to another component of the endpoint such as a kernel.
    Those responsibilities are beyond the scope of this document, and
-   include, but are not limited to, the handling of broadcast packets
-   and multicast groups, or the local termination of PAUSE frames.
+   include, but are not limited to, the forwarding of broadcast and
+   multicast frames, and the local termination of PAUSE frames.
 
-   If an Ethernet proxying endpoint fails to deliver a frame to an
-   underlying Ethernet segment, the endpoint MUST drop the frame.
+   When bridging Ethernet segments, undetected forwarding loops can lead
+   to broadcast storms that exhaust tunnel capacity, cause congestion
+   and Ethernet frame loss, and disrupt tunneled control protocols.
+   Implementations that bridge Ethernet segments SHOULD employ loop
+   prevention mechanisms, such as STP or RSTP [IEEE802.1Q], unless they
+   delegate that responsibility to another component of the endpoint
+   such as a kernel.  Implementations can also monitor frame rates for
+   unexpected traffic spikes and apply rate limits to broadcast and
+   multicast Ethernet frames.
+
+   If an Ethernet proxying endpoint fails to deliver an Ethernet frame
+   to an underlying Ethernet segment, the endpoint MUST drop the
+   Ethernet frame.
 
 8.  Examples
 
@@ -566,7 +577,7 @@ Table of Contents
    In this case, the client connects to the Ethernet proxy and
    immediately can start relaying Ethernet frames from its attached
    broadcast domain to the proxy.  The difference between this example
-   and Section 8.1 is limited to what the Client is doing with the the
+   and Section 8.1 is limited to what the Client is doing with the
    tunnel; the exchange between the Client and the Proxy is the same as
    in Figure 7 above.
 
@@ -575,14 +586,14 @@ Table of Contents
    When the protocol running inside the tunnel uses congestion control
    (e.g., [TCP] or [QUIC]), the proxied traffic will incur at least two
    nested congestion controllers.  Implementers will benefit from
-   reading the guidance in Section 3.1.11 of [UDP-USAGE].  By default
+   reading the guidance in Section 3.1.11 of [UDP-USAGE].  By default,
    the tunneling of Ethernet frames MUST NOT assume that the carried
    Ethernet frames contain congestion controlled traffic.  Optimizations
    for traffic flows carried within the Ethernet Frames MAY be done in
    cases where the content of the Ethernet Frames have been identified
    to be congestion controlled traffic.
 
-   Some implementations might find it benefitial to maintain a small
+   Some implementations might find it beneficial to maintain a small
    buffer of frames to be sent through the tunnel to smooth out short
    term variations and bursts in tunnel capacity.  As such a buffer is
    limited, Ethernet frames can get dropped when the buffer limit is
@@ -598,15 +609,17 @@ Table of Contents
 
 9.1.  MTU and Frame Ordering Considerations
 
-   When using HTTP/3 with the QUIC Datagram extension [QUIC-DGRAM],
-   Ethernet frames can be transmitted in QUIC DATAGRAM frames.  Since
-   DATAGRAM frames cannot be fragmented, they can only carry Ethernet
-   frames up to a given length determined by the QUIC connection
-   configuration and the Path MTU (PMTU).  Implementations MAY rely on
-   [QUIC]'s use of [DPLPMTUD] to probe and discover the PMTU over the
-   connection's lifetime, and adjust any associated interface MTU as
-   needed.  Furthermore, the UDP packets carrying these frames could be
-   reordered by the network.
+   Ethernet proxying supports two modes of operation with different
+   implications for supported frame size and ordering: QUIC DATAGRAM
+   frames and HTTP DATAGRAM capsules.  When using HTTP/3 with the QUIC
+   Datagram extension [QUIC-DGRAM], Ethernet frames can be transmitted
+   in QUIC DATAGRAM frames.  Since DATAGRAM frames cannot be fragmented,
+   they can only carry Ethernet frames up to a given length determined
+   by the QUIC connection configuration and the Path MTU (PMTU).
+   Implementations MAY rely on [QUIC]'s use of [DPLPMTUD] to probe and
+   discover the PMTU over the connection's lifetime, and adjust any
+   associated interface MTU as needed.  Furthermore, the UDP packets
+   carrying these frames could be reordered by the network.
 
    When using HTTP/1.1 or HTTP/2, and when using HTTP/3 without the QUIC
    Datagram extension [QUIC-DGRAM], Ethernet frames are transmitted in
@@ -624,7 +637,7 @@ Table of Contents
 
 9.2.  IEEE 802.1Q tagging
 
-   When the proxy transports Etherent frames that carry an IEEE 802.1Q
+   When the proxy transports Ethernet frames that carry an IEEE 802.1Q
    [IEEE802.1Q] VLAN tag, these are by default transparently forwarded
    through the tunnel.  When the tunnel ingress and/or egress interprets
    the tags, there must be agreement (signaled or manually configured)
@@ -632,7 +645,7 @@ Table of Contents
    egress.  The procedure for this signalling/configuration is not
    defined in this document.
 
-   A proxy that is used to access to multiple VLANs MAY map each
+   A proxy that is used for access to multiple VLANs MAY map each
    individual VLAN to a distinct URI, such that each Ethernet proxying
    request is associated with only one VLAN.  This provides flexibility
    in forwarding, while meeting the requirements for the relative
@@ -647,14 +660,18 @@ Table of Contents
    to a Layer 2 network.  Bad actors could abuse this capability to
    attack hosts on that network that they would otherwise be unable to
    reach.  HTTP servers that support Ethernet proxying SHOULD restrict
-   its use to authenticated users.  Depending on the deployment,
-   possible authentication mechanisms include mutual TLS between IP
-   proxying endpoints, HTTP-based authentication via the HTTP
-   Authorization header [HTTP], or even bearer tokens.  Proxies can
-   enforce policies for authenticated users to further constrain client
-   behavior or deal with possible abuse.  For example, proxies can rate
-   limit individual clients that send an excessively large amount of
-   traffic through the proxy.
+   its use to authorized users who have properly authenticated to the
+   HTTP server.  Depending on the deployment, possible authentication
+   mechanisms include mutual TLS between Ethernet proxying endpoints and
+   HTTP-based authentication via the HTTP Authorization header field
+   [HTTP].  Once authenticated, proxies can enforce policies on
+   authorized users to further constrain client behavior or deal with
+   possible abuse.  For example, proxies can rate limit individual
+   clients that send an excessively large amount of traffic through the
+   proxy.  Additionally, an attacker could attempt to consume server
+   resources by sending datagrams with unknown Context IDs or before
+   establishing an HTTP request stream; implementations mitigate this
+   risk by enforcing the buffering limits described in Section 6.
 
    Users of this protocol may send arbitrary Ethernet frames through the
    tunnel, including frames with arbitrary source MAC addresses.  This
@@ -688,9 +705,9 @@ Table of Contents
 
 11.1.  HTTP Upgrade Token
 
-   This document will request IANA to register "connect-ethernet" in the
-   HTTP Upgrade Token Registry maintained at
-   <https://www.iana.org/assignments/http-upgrade-tokens>.
+   IANA is requested to register "connect-ethernet" in the HTTP Upgrade
+   Token Registry maintained at <https://www.iana.org/assignments/http-
+   upgrade-tokens>.
 
    Value:  connect-ethernet
    Description:  Proxying of Ethernet Payloads
@@ -699,10 +716,9 @@ Table of Contents
 
 11.2.  Updates to the MASQUE URI Suffixes Registry
 
-   This document will request IANA to register "ethernet" in the MASQUE
-   URI Suffixes Registry maintained at
-   <https://www.iana.org/assignments/masque>, created by Section 12.2 of
-   [CONNECT-IP].
+   IANA is requested to register "ethernet" in the MASQUE URI Suffixes
+   Registry maintained at <https://www.iana.org/assignments/masque>,
+   created by Section 12.2 of [CONNECT-IP].
 
            +==============+===================+===============+
            | Path Segment | Description       | Reference     |
@@ -715,17 +731,6 @@ Table of Contents
 12.  References
 
 12.1.  Normative References
-
-   [CONNECT-IP]
-              Pauly, T., Ed., Schinazi, D., Chernyakhovsky, A.,
-              Kühlewind, M., and M. Westerlund, "Proxying IP in HTTP",
-              RFC 9484, DOI 10.17487/RFC9484, October 2023,
-              <https://www.rfc-editor.org/rfc/rfc9484>.
-
-   [CONNECT-UDP]
-              Schinazi, D., "Proxying UDP in HTTP", RFC 9298,
-              DOI 10.17487/RFC9298, August 2022,
-              <https://www.rfc-editor.org/rfc/rfc9298>.
 
    [DPLPMTUD] Fairhurst, G., Jones, T., Tüxen, M., Rüngeler, I., and T.
               Völker, "Packetization Layer Path MTU Discovery for
@@ -795,10 +800,6 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-   [TCP]      Eddy, W., Ed., "Transmission Control Protocol (TCP)",
-              STD 7, RFC 9293, DOI 10.17487/RFC9293, August 2022,
-              <https://www.rfc-editor.org/rfc/rfc9293>.
-
    [TEMPLATE] Gregorio, J., Fielding, R., Hadley, M., Nottingham, M.,
               and D. Orchard, "URI Template", RFC 6570,
               DOI 10.17487/RFC6570, March 2012,
@@ -815,6 +816,17 @@ Table of Contents
               <https://www.rfc-editor.org/rfc/rfc8615>.
 
 12.2.  Informative References
+
+   [CONNECT-IP]
+              Pauly, T., Ed., Schinazi, D., Chernyakhovsky, A.,
+              Kühlewind, M., and M. Westerlund, "Proxying IP in HTTP",
+              RFC 9484, DOI 10.17487/RFC9484, October 2023,
+              <https://www.rfc-editor.org/rfc/rfc9484>.
+
+   [CONNECT-UDP]
+              Schinazi, D., "Proxying UDP in HTTP", RFC 9298,
+              DOI 10.17487/RFC9298, August 2022,
+              <https://www.rfc-editor.org/rfc/rfc9298>.
 
    [ETHERIP]  Housley, R. and S. Hollenbeck, "EtherIP: Tunneling
               Ethernet Frames in IP Datagrams", RFC 3378,
@@ -839,22 +851,25 @@ Table of Contents
               <https://www.rfc-editor.org/rfc/rfc3931>.
 
    [OPTIMISTIC]
-              Schwartz, B. M., "Security Considerations for Optimistic
-              Protocol Transitions in HTTP/1.1", Work in Progress,
-              Internet-Draft, draft-ietf-httpbis-optimistic-upgrade-06,
-              18 September 2025, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-httpbis-optimistic-upgrade-06>.
+              Schwartz, B., "Security Considerations for Optimistic
+              Protocol Transitions in HTTP/1.1", RFC 9931,
+              DOI 10.17487/RFC9931, March 2026,
+              <https://www.rfc-editor.org/rfc/rfc9931>.
+
+   [RFC826]   Plummer, D., "An Ethernet Address Resolution Protocol: Or
+              Converting Network Protocol Addresses to 48.bit Ethernet
+              Address for Transmission on Ethernet Hardware", STD 37,
+              RFC 826, DOI 10.17487/RFC826, November 1982,
+              <https://www.rfc-editor.org/rfc/rfc826>.
 
    [RFC4861]  Narten, T., Nordmark, E., Simpson, W., and H. Soliman,
               "Neighbor Discovery for IP version 6 (IPv6)", RFC 4861,
               DOI 10.17487/RFC4861, September 2007,
               <https://www.rfc-editor.org/rfc/rfc4861>.
 
-   [RFC826]   Plummer, D., "An Ethernet Address Resolution Protocol: Or
-              Converting Network Protocol Addresses to 48.bit Ethernet
-              Address for Transmission on Ethernet Hardware", STD 37,
-              RFC 826, DOI 10.17487/RFC0826, November 1982,
-              <https://www.rfc-editor.org/rfc/rfc826>.
+   [TCP]      Eddy, W., Ed., "Transmission Control Protocol (TCP)",
+              STD 7, RFC 9293, DOI 10.17487/RFC9293, August 2022,
+              <https://www.rfc-editor.org/rfc/rfc9293>.
 
    [UDP-USAGE]
               Eggert, L., Fairhurst, G., and G. Shepherd, "UDP Usage
